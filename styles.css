@@ -1,0 +1,48 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Input Field */
+#state-input {
+  display: block;
+  margin: 20px auto;
+  padding: 10px;
+  width: 80%;
+  max-width: 400px;
+  font-size: 16px;
+}
+
+/* Button */
+#fetch-alerts {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Alerts Display */
+#alerts-display {
+  margin: 20px auto;
+  padding: 10px;
+  width: 90%;
+  max-width: 600px;
+  background-color: #fff;
+}
+
+/* Error Message */
+#error-message {
+  color: red;
+  text-align: center;
+  font-weight: bold;
+}

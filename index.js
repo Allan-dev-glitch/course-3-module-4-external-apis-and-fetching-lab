@@ -1,116 +1,90 @@
-function gameObject() {
-    return {
-        home: {
-            teamName: "Brooklyn Nets",
-            colors: ["Black", "White"],
-            players: {
-                "Alan Anderson": {
-                    number: 0,
-                    shoe: 16,
-                    points: 22,
-                    rebounds: 12,
-                    assists: 12,
-                    steals: 3,
-                    blocks: 1,
-                    slamDunks: 1,
-                },
-                "Reggie Evens": {
-                    number: 30,
-                    shoe: 14,
-                    points: 12,
-                    rebounds: 12,
-                    assists: 12,
-                    steals: 12,
-                    blocks: 12,
-                    slamDunks: 7,
-                },
-                "Brook Lopez": {
-                    number: 11,
-                    shoe: 17,
-                    points: 17,
-                    rebounds: 19,
-                    assists: 10,
-                    steals: 3,
-                    blocks: 1,
-                    slamDunks: 15,
-                },
-                "Mason Plumlee": {
-                    number: 1,
-                    shoe: 19,
-                    points: 26,
-                    rebounds: 12,
-                    assists: 6,
-                    steals: 3,
-                    blocks: 8,
-                    slamDunks: 5,
-                },
-                "Jason Terry": {
-                    number: 31,
-                    shoe: 15,
-                    points: 19,
-                    rebounds: 2,
-                    assists: 2,
-                    steals: 4,
-                    blocks: 11,
-                    slamDunks: 1,
-                },
-            },
-        },
-        away: {
-            teamName: "Charlotte Hornets",
-            colors: ["Turquoise", "Purple"],
-            players: {
-                "Jeff Adrien": {
-                    number: 4,
-                    shoe: 18,
-                    points: 10,
-                    rebounds: 1,
-                    assists: 1,
-                    steals: 2,
-                    blocks: 7,
-                    slamDunks: 2,
-                },
-                "Bismack Biyombo": {
-                    number: 0,
-                    shoe: 16,
-                    points: 12,
-                    rebounds: 4,
-                    assists: 7,
-                    steals: 7,
-                    blocks: 15,
-                    slamDunks: 10,
-                },
-                "DeSagna Diop": {
-                    number: 2,
-                    shoe: 14,
-                    points: 24,
-                    rebounds: 12,
-                    assists: 12,
-                    steals: 4,
-                    blocks: 5,
-                    slamDunks: 5,
-                },
-                "Ben Gordon": {
-                    number: 8,
-                    shoe: 15,
-                    points: 33,
-                    rebounds: 3,
-                    assists: 2,
-                    steals: 1,
-                    blocks: 1,
-                    slamDunks: 0,
-                },
-                "Brendan Hayword": {
-                    number: 33,
-                    shoe: 15,
-                    points: 6,
-                    rebounds: 12,
-                    assists: 12,
-                    steals: 22,
-                    blocks: 5,
-                    slamDunks: 12,
-                },
-            },
-        },
-    };
+const stateInput = document.getElementById("state-input");
+const fetchAlertsBtn = document.getElementById("fetch-alerts");
+const alertsDisplay = document.getElementById("alerts-display");
+const errorMessageDiv = document.getElementById("error-message");
+
+// Mapping state abbreviations to full names
+const stateNames = {
+    AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas",
+    CA: "California", CO: "Colorado", CT: "Connecticut", DE: "Delaware",
+    FL: "Florida", GA: "Georgia", HI: "Hawaii", ID: "Idaho",
+    IL: "Illinois", IN: "Indiana", IA: "Iowa", KS: "Kansas",
+    KY: "Kentucky", LA: "Louisiana", ME: "Maine", MD: "Maryland",
+    MA: "Massachusetts", MI: "Michigan", MN: "Minnesota", MS: "Mississippi",
+    MO: "Missouri", MT: "Montana", NE: "Nebraska", NV: "Nevada",
+    NH: "New Hampshire", NJ: "New Jersey", NM: "New Mexico", NY: "New York",
+    NC: "North Carolina", ND: "North Dakota", OH: "Ohio", OK: "Oklahoma",
+    OR: "Oregon", PA: "Pennsylvania", RI: "Rhode Island", SC: "South Carolina",
+    SD: "South Dakota", TN: "Tennessee", TX: "Texas", UT: "Utah",
+    VT: "Vermont", VA: "Virginia", WA: "Washington", WV: "West Virginia",
+    WI: "Wisconsin", WY: "Wyoming"
+};
+
+fetchAlertsBtn.addEventListener("click", function () {
+    const state = stateInput.value.trim();
+
+    // Input validation: must be exactly 2 capital letters
+    if (!/^[A-Z]{2}$/.test(state)) {
+        displayError("Please enter a valid state abbreviation");
+        return;
+    }
+
+    fetchWeatherData(state);
+});
+
+function fetchWeatherData(state) {
+    const url = `https://api.weather.gov/alerts/active?area=${state}`;
+
+    fetch(url)
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error("Failed to fetch alerts. Network error.");
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            displayWeather(data, state);
+            clearError();
+            stateInput.value = ""; // Clear input after successful fetch
+        })
+        .catch(function (error) {
+            displayError(error.message);
+        });
+}
+
+function displayWeather(data, state) {
+    alertsDisplay.innerHTML = "";
+
+    const count = data.features.length;
+    const fullStateName = stateNames[state];
+
+    // Create summary
+    const summary = document.createElement("p");
+    summary.textContent =
+        "Current watches, warnings, and advisories for " +
+        fullStateName +
+        ": " +
+        count;
+    alertsDisplay.appendChild(summary);
+
+    // Create list of alert headlines
+    const ul = document.createElement("ul");
+    data.features.forEach(function (alert) {
+        const li = document.createElement("li");
+        li.textContent = alert.properties.headline || "No headline available";
+        ul.appendChild(li);
+    });
+
+    alertsDisplay.appendChild(ul);
+}
+
+// Display error message
+function displayError(message) {
+    errorMessageDiv.textContent = message;
+    alertsDisplay.innerHTML = ""; // Clear alerts on error
+}
+
+// Clear error message
+function clearError() {
+    errorMessageDiv.textContent = "";
 }

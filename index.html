@@ -1,20 +1,25 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>JS Object Ball Lab</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="node_modules/mocha/mocha.css" />
-  </head>
-  <body>
-    <div id="mocha"></div>
-    <script src="node_modules/mocha/mocha.js"></script>
-    <script src="node_modules/expect/umd/expect.min.js"></script>
-    <script>mocha.setup('bdd');</script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Alerts App</title>
+</head>
+<body>
+
+    <input
+        type="text"
+        id="state-input"
+        placeholder="Enter state abbreviation"
+    />
+
+    <button id="fetch-alerts">
+        Get Weather Alerts
+    </button>
+
+    <div id="error-message"></div>
+
+    <div id="alerts-display"></div>
+
     <script src="index.js"></script>
-    <script src="test/indexTest.js"></script>
-    <script>
-      mocha.run();
-    </script>
-  </body>
+</body>
 </html>
