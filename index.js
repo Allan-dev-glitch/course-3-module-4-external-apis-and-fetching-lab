@@ -36,18 +36,16 @@ function fetchWeatherData(state) {
     const url = `https://api.weather.gov/alerts/active?area=${state}`;
 
     fetch(url)
-        .then(function (response) {
-            if (!response.ok) {
-                throw new Error("Failed to fetch alerts. Network error.");
-            }
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to fetch alerts");
             return response.json();
         })
-        .then(function (data) {
+        .then(data => {
             displayWeather(data, state);
             clearError();
             stateInput.value = ""; // Clear input after successful fetch
         })
-        .catch(function (error) {
+        .catch(error => {
             displayError(error.message);
         });
 }
@@ -69,7 +67,7 @@ function displayWeather(data, state) {
 
     // Create list of alert headlines
     const ul = document.createElement("ul");
-    data.features.forEach(function (alert) {
+    data.features.forEach(alert => {
         const li = document.createElement("li");
         li.textContent = alert.properties.headline || "No headline available";
         ul.appendChild(li);
@@ -81,10 +79,12 @@ function displayWeather(data, state) {
 // Display error message
 function displayError(message) {
     errorMessageDiv.textContent = message;
+    errorMessageDiv.classList.remove("hidden");
     alertsDisplay.innerHTML = ""; // Clear alerts on error
 }
 
 // Clear error message
 function clearError() {
     errorMessageDiv.textContent = "";
+    errorMessageDiv.classList.add("hidden");
 }
